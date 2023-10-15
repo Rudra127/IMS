@@ -3,8 +3,10 @@ import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
 const app = express();
 import cors from "cors";
+import loginUsers from "./Auth/login.js";
+import registerUser from "./Auth/register.js";
 
-dotenvConfig();
+dotenvConfig(); 
 // conncted to db
 const db = connectToMongo();
 
@@ -18,6 +20,11 @@ app.use(
     credentials: true,
   })
 );
+
+//user Endpoints
+app.post("/register", registerUser);
+
+app.post("/login", loginUsers);
 
 //testing
 app.get("/", (req, res) => {
