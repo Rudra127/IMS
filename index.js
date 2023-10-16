@@ -24,6 +24,8 @@ app.use(
   })
 );
 
+
+
 //user Endpoints
 app.post("/register", registerUser);
 
