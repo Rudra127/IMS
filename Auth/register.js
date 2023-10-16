@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
 
     // Create a new user
     const newUser = new RegisterUsers({
-      empId, username, dept, designation, mNumber, email, password: hashedPassword,
+      empId, username, dept, designation, mNumber, email, password: hashedPassword,confirmPass: hashedPassword
     });
 
     // Save the user to the database
