@@ -9,6 +9,10 @@ import cors from "cors";
 // imp  ort loginUsers from "./Auth/login.js";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
+import productCreate from "./Products/createProduct.js";
+import productDelete from "./Products/deleteProduct.js";
+import productGet from "./Products/getProduct.js";
+import productUpdate from "./Products/updateProduct.js";
 
 dotenvConfig(); 
 // conncted to db
@@ -31,6 +35,22 @@ app.use(
 app.post("/register", registerUser);
 
 app.post("/login", loginUsers);
+
+
+
+//product endpoints
+
+//create product
+app.post("/cproducts", productCreate);
+
+//update product
+app.post("/uProducts", productUpdate);
+
+//get product
+app.get("/gProducts", productGet);
+
+//delete product
+app.post("/dProducts", productDelete);
 
 //testing
 app.get("/", (req, res) => {
