@@ -2,12 +2,17 @@ import express from "express";
 import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
 const app = express();
-import jsonwebtoken from "jsonwebtoken";
+// import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 
 import cors from "cors";
-// import loginUsers from "./Auth/login.js";
+// imp  ort loginUsers from "./Auth/login.js";
 import registerUser from "./Auth/register.js";
+import loginUsers from "./Auth/login.js";
+import productCreate from "./Products/createProduct.js";
+import productDelete from "./Products/deleteProduct.js";
+import productGet from "./Products/getProduct.js";
+import productUpdate from "./Products/updateProduct.js";
 
 dotenvConfig();
 // conncted to db
@@ -24,15 +29,28 @@ app.use(
   })
 );
 
+
+
 //user Endpoints
 app.post("/register", registerUser);
 
-app.post("/login", (req, res) => {
-  const { email } = req.body;
-  const user = { email: email };
-  const accesstoken = jsonwebtoken.sign(user, process.env.JWT_SECRET);
-  res.json({ accesstoken: accesstoken });
-});
+app.post("/login", loginUsers);
+
+
+
+//product endpoints
+
+//create product
+app.post("/cproducts", productCreate);
+
+//update product
+app.post("/uProducts", productUpdate);
+
+//get product
+app.get("/gProducts", productGet);
+
+//delete product
+app.post("/dProducts", productDelete);
 
 //testing
 app.get("/", (req, res) => {
