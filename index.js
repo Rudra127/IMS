@@ -9,7 +9,7 @@ import cors from "cors";
 // import loginUsers from "./Auth/login.js";
 import registerUser from "./Auth/register.js";
 
-dotenvConfig(); 
+dotenvConfig();
 // conncted to db
 const db = connectToMongo();
 
@@ -27,18 +27,17 @@ app.use(
 //user Endpoints
 app.post("/register", registerUser);
 
-app.post("/login", (req, res)=>{
+app.post("/login", (req, res) => {
   const { email } = req.body;
-  const user = {email: email}
-  const accesstoken = jsonwebtoken.sign(user, process.env.JWT_SECRET)
-  res.json({accesstoken: accesstoken})
+  const user = { email: email };
+  const accesstoken = jsonwebtoken.sign(user, process.env.JWT_SECRET);
+  res.json({ accesstoken: accesstoken });
 });
 
 //testing
 app.get("/", (req, res) => {
   res.json({ massage: "Welcome to the IMS Api Server!!" });
 });
-
 
 app.listen(port, () => {
   console.log(`IMS app listening on port http://localhost:${port}`);
