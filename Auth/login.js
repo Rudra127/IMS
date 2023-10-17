@@ -7,11 +7,9 @@ const loginUsers = async (req, res) => {
     const existUser = await registerUsers.findOne({ email });
 
     if (existUser) {
-      // const passwordMatch = await bcrypt.compare(password, existUser.password);
+      
 
     if (password === existUser.password) {
-    
-      // console.log({passwordMatch})
 
       res.status(200).json({ message: "User logged in successfully" });
 
