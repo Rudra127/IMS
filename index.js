@@ -13,6 +13,8 @@ import productCreate from "./Products/createProduct.js";
 import productDelete from "./Products/deleteProduct.js";
 import productGet from "./Products/getProduct.js";
 import productUpdate from "./Products/updateProduct.js";
+// import cookieParser from "./CookieParser.js";
+// import cookieParser from "./cookieParser"; // Import the cookie-parser middleware
 
 dotenvConfig();
 // conncted to db
@@ -20,6 +22,7 @@ const db = connectToMongo();
 
 const port = 4469;
 app.use(express.json());
+// app./use(cookieParser());  
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],

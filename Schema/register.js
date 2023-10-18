@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+// import jwt  from "jsonwebtoken";
 // here we have to add the deptartment number as we make them such as our dept number will be 07(computer).
 const validDepartments = ['Dept1', 'Dept2', 'Dept3'];
+
 const userSchema =  new mongoose.Schema({
   //dept, designation, number, username, 
   
@@ -43,9 +45,11 @@ const userSchema =  new mongoose.Schema({
   confirmPass: {
     type: String,
     required: true,
-  },
-
+  }
 });
+
+
+
 const registerUsers = mongoose.model('RegisterUsers', userSchema);
 
 export default registerUsers;

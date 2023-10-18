@@ -7,6 +7,7 @@ const registerUser = async (req, res) => {
     const {
       empId, username, dept, designation, mNumber, email, password, confirmPass,
     } = req.body;
+    const expires = 1000*60*60*24*15;
 
     // Check if the password and confirm password match
     if (password !== confirmPass) {
@@ -32,13 +33,16 @@ const registerUser = async (req, res) => {
     // Save the user to the database
     await newUser.save();
 
-    // Generate a JWT token for the user (you may want to customize this)
-    const user = { username, email };
-    const accessToken = jwt.sign(user, process.env.JWT_SECRET); // Replace with your secret key
-
-    // Return the access token and user data
-    return res.status(201).json({ accessToken, user });
-  } catch (error) {
+    
+    let token = jwt.sign({ email: email}, process.env.JWT_SECRET); 
+    console.log(token);
+    res.cookie("Authtoken", token,{
+      expires:new Date(Date.now()+expires),
+      httpOnly:true
+    });
+    res.status(200).json({ message: "User created in successfully" });    
+    
+    } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
