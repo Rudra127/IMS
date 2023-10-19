@@ -35,8 +35,8 @@ The IMS backend provides the server-side functionality for the IMS application, 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/ims-backend.git
-   cd ims-backend
+   git clone https://github.com/yourusername/IMS-BACKEND.git
+   cd IMS--BACKEND
 Install dependencies:
 
 bash
