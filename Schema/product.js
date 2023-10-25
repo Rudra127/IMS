@@ -17,10 +17,11 @@ const productSchema = mongoose.Schema({
         type: String,
         required: true,
       },
+
       price: {
         type: Number,
         required: true,
-      },
+      },  
       quantityInStock: {
         type: Number,
         default: 0,
