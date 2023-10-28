@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
     }
 
     // Hash the password before saving it to the database
-    // const saltRounds = 10;
+    // const saltRounds = 10; 
     // const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create a new user
