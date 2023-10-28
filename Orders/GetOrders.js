@@ -2,11 +2,17 @@ import Order from "../Schema/Order.js";
 
 export const GetOrders = async (req, res) => {
   try {
-    const { cartId } = await req.query;
+    const { cartId, Status, orderId } = await req.query;
     console.log(cartId);
     let query = {};
     if (cartId) {
       query.cartId = cartId;
+    }
+    if (Status) {
+      query.Status = Status;
+    }
+    if (orderId) {
+      query.orderId = orderId;
     }
 
     const existedOrders = await Order.find(query);
