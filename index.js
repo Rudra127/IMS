@@ -13,6 +13,11 @@ import productCreate from "./Products/createProduct.js";
 import productDelete from "./Products/deleteProduct.js";
 import productGet from "./Products/getProduct.js";
 import productUpdate from "./Products/updateProduct.js";
+import { AddCart } from "./Cart/AddCart.js";
+import { GetCarts } from "./Cart/GetCarts.js";
+import { CreateOrder } from "./Orders/CreateOrder.js";
+import { GetOrders } from "./Orders/GetOrders.js";
+import { DeleteOrders } from "./Orders/DeleteOrder.js";
 // import cookieParser from "./CookieParser.js";
 // import cookieParser from "./cookieParser"; // Import the cookie-parser middleware
 
@@ -22,7 +27,7 @@ const db = connectToMongo();
 
 const port = 4469;
 app.use(express.json());
-// app./use(cookieParser());  
+// app./use(cookieParser());
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
@@ -32,14 +37,10 @@ app.use(
   })
 );
 
-
-
 //user Endpoints
 app.post("/register", registerUser);
 
 app.post("/login", loginUsers);
-
-
 
 //product endpoints
 
@@ -54,6 +55,17 @@ app.get("/gProducts", productGet);
 
 //delete product
 app.post("/dProducts", productDelete);
+
+// orbit's area //
+
+app.post("/CreateCart", AddCart);
+app.get("/GetCarts", GetCarts);
+
+app.post("/CreateOrder", CreateOrder);
+app.get("/GetOrders", GetOrders);
+app.post("/DeleteOrder", DeleteOrders);
+
+// orbit's area END //
 
 //testing
 app.get("/", (req, res) => {
