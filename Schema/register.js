@@ -26,6 +26,10 @@ const userSchema =  new mongoose.Schema({
       message: 'Invalid department',
     },
   },
+  role: {
+    type: String,
+    default: "employee"
+  },
   designation: {
     type: String,
   },
@@ -47,8 +51,6 @@ const userSchema =  new mongoose.Schema({
     required: true,
   }
 });
-
-
 
 const registerUsers = mongoose.model('RegisterUsers', userSchema);
 
