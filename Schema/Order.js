@@ -42,6 +42,12 @@ const OrderSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    Status: {
+      type: String,
+      required: true,
+      default: "pending",
+      enum: ["pending", "approved", "canceled"],
+    },
     products: [productSchema],
   },
   {
