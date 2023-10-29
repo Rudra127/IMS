@@ -18,6 +18,7 @@ import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
 import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
+import { UpdateOrder } from "./Orders/UpdateOrder.js";
 // import cookieParser from "./CookieParser.js";
 // import cookieParser from "./cookieParser"; // Import the cookie-parser middleware
 
@@ -31,7 +32,7 @@ app.use(express.json());
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
-    origin: [process.env.CLIENT_URL],
+    origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
     methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
@@ -63,6 +64,7 @@ app.get("/GetCarts", GetCarts);
 
 app.post("/CreateOrder", CreateOrder);
 app.get("/GetOrders", GetOrders);
+app.post("/UpdateOrder", UpdateOrder);
 app.post("/DeleteOrder", DeleteOrders);
 
 // orbit's area END //
