@@ -15,6 +15,7 @@ const loginUsers = async (req, res) => {
           httpOnly:true
         });
         res.status(200).json({ message: "User logged in successfully" });
+        
         } else {
         // If the user exists and the password is correct, you can consider the user logged in
         res.status(401).json({ message: "Incorrect password" });

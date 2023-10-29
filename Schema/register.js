@@ -3,9 +3,17 @@ import mongoose from "mongoose";
 // here we have to add the deptartment number as we make them such as our dept number will be 07(computer).
 const validDepartments = ['Dept1', 'Dept2', 'Dept3'];
 
+function generateRandomCartId() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
 const userSchema =  new mongoose.Schema({
   //dept, designation, number, username, 
-  
+  cartId:{
+    type: Number, 
+    unique: true,
+  },
+
   empId: {
     type: Number,
     unique: true,
@@ -50,6 +58,12 @@ const userSchema =  new mongoose.Schema({
     type: String,
     required: true,
   }
+});
+userSchema.pre('save', function (next) {
+  if (!this.cartId) {
+    this.cartId = generateRandomCartId();
+  }
+  next();
 });
 
 const registerUsers = mongoose.model('RegisterUsers', userSchema);
