@@ -19,7 +19,8 @@ import { CreateOrder } from "./Orders/CreateOrder.js";
 import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
 import logout from "./Auth/logout.js";
-import cookieParser from 'cookie-parser';
+import authMiddleware from "./Middleware/auth.js";
+// import cookieParser from 'cookie-parser';
 
 dotenvConfig();
 // conncted to db
@@ -27,7 +28,7 @@ const db = connectToMongo();
 
 const port = 4469;
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
@@ -38,7 +39,6 @@ app.use(
 );
 
 
-//middleware
 
 
 //user Endpoints
@@ -48,6 +48,8 @@ app.post("/login", loginUsers);
  
 app.get("/logout", logout);
 
+//middleware for all 
+app.use(authMiddleware)
 
 //create product
 app.post("/cproducts", productCreate);
