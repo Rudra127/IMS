@@ -2,7 +2,13 @@ import Order from "../Schema/Order.js";
 
 export const GetOrders = async (req, res) => {
   try {
-    const { cartId, Status, orderId } = await req.query;
+    const {
+      cartId,
+      Status,
+      orderId,
+      EmployeeNotification,
+      ShopkeeperNotification,
+    } = await req.query;
     console.log(cartId);
     let query = {};
     if (cartId) {
@@ -13,6 +19,13 @@ export const GetOrders = async (req, res) => {
     }
     if (orderId) {
       query.orderId = orderId;
+    }
+    if (EmployeeNotification) {
+      query.EmployeeNotification = EmployeeNotification;
+    }
+
+    if (ShopkeeperNotification) {
+      query.ShopkeeperNotification = ShopkeeperNotification;
     }
 
     const existedOrders = await Order.find(query);

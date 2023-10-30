@@ -64,7 +64,16 @@ const OrderSchema = mongoose.Schema(
       default: "pending",
       enum: ["pending", "approved", "canceled", "attended"],
     },
-
+    EmployeeNotification: {
+      type: Boolean,
+      required: true,
+      default: "false",
+    },
+    ShopkeeperNotification: {
+      type: Boolean,
+      required: true,
+      default: "false",
+    },
     products: [productSchema],
   },
   {

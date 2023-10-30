@@ -20,7 +20,7 @@ import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
 import { UpdateOrder } from "./Orders/UpdateOrder.js";
 import logout from "./Auth/logout.js";
-import authMiddleware from "./Middleware/auth.js";
+// import authMiddleware from "./Middleware/auth.js";
 // import cookieParser from 'cookie-parser';
 
 dotenvConfig();
@@ -47,7 +47,7 @@ app.post("/login", loginUsers);
 app.get("/logout", logout);
 
 //middleware for all
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 //create product
 app.post("/cproducts", productCreate);
