@@ -13,7 +13,7 @@ import productCreate from "./Products/createProduct.js";
 import productDelete from "./Products/deleteProduct.js";
 import productGet from "./Products/getProduct.js";
 import productUpdate from "./Products/updateProduct.js";
-import  AddCart  from "./Cart/AddCart.js";
+import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
 import { GetOrders } from "./Orders/GetOrders.js";
@@ -43,11 +43,11 @@ app.use(
 app.post("/register", registerUser);
 
 app.post("/login", loginUsers);
- 
+
 app.get("/logout", logout);
 
-//middleware for all 
-app.use(authMiddleware)
+//middleware for all
+app.use(authMiddleware);
 
 //create product
 app.post("/cproducts", productCreate);
