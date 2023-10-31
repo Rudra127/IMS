@@ -18,6 +18,7 @@ import { UpdateOrder } from "./Orders/UpdateOrder.js";
 import logout from "./Auth/logout.js";
 import cookieParser from 'cookie-parser';
 import authMiddleware from "./Middleware/auth.js";
+import isLoggedIn from "./Middleware/islogin.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
@@ -51,7 +52,7 @@ app.get("/logout", logout);
 //middleware for all 
 app.use(cookieParser());
 app.use(authMiddleware);
-
+app.use(isLoggedIn);
 //create product
 app.post("/cproducts", productCreate);
 
