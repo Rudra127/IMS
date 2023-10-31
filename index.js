@@ -13,14 +13,16 @@ import productCreate from "./Products/createProduct.js";
 import productDelete from "./Products/deleteProduct.js";
 import productGet from "./Products/getProduct.js";
 import productUpdate from "./Products/updateProduct.js";
-import  AddCart  from "./Cart/AddCart.js";
+import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
 import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
+import { UpdateOrder } from "./Orders/UpdateOrder.js";
 import logout from "./Auth/logout.js";
-import authMiddleware from "./Middleware/auth.js";
+// import authMiddleware from "./Middleware/auth.js";
 import cookieParser from 'cookie-parser';
+import authmiddleware from "./Middleware/auth.js";
 
 dotenvConfig();
 // conncted to db
@@ -31,26 +33,22 @@ app.use(express.json());
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
-    origin: [process.env.CLIENT_URL],
+    origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
     methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
 );
 
-
-
-
 //user Endpoints
 app.post("/register", registerUser);
   
 app.post("/login", loginUsers);
- 
+
 app.get("/logout", logout);
 
 //middleware for all 
 app.use(cookieParser());
-app.use(authMiddleware);
-
+app.use(authmiddleware);
 
 //create product
 app.post("/cproducts", productCreate);
@@ -64,6 +62,9 @@ app.get("/gProducts", productGet);
 //delete product
 app.post("/dProducts", productDelete);
 
+
+
+
 // orbit's area //
 
 app.post("/CreateCart", AddCart);
@@ -71,6 +72,7 @@ app.get("/GetCarts", GetCarts);
 
 app.post("/CreateOrder", CreateOrder);
 app.get("/GetOrders", GetOrders);
+app.post("/UpdateOrder", UpdateOrder);
 app.post("/DeleteOrder", DeleteOrders);
 
 // orbit's area END //

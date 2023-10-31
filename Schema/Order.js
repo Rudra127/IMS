@@ -21,9 +21,25 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  quantity: {
+  actualQuantity: {
     type: Number,
     minimum: 1,
+  },
+  updatedQuantity: {
+    type: Number,
+    minimum: 1,
+    default: 0,
+  },
+  Status: {
+    type: String,
+    required: true,
+    default: "pending",
+    enum: ["approved", "canceled", "pending"],
+  },
+  remarks: {
+    type: String,
+    default: "",
+    // required: true,
   },
 });
 
@@ -46,7 +62,17 @@ const OrderSchema = mongoose.Schema(
       type: String,
       required: true,
       default: "pending",
-      enum: ["pending", "approved", "canceled"],
+      enum: ["pending", "approved", "canceled", "attended"],
+    },
+    EmployeeNotification: {
+      type: Boolean,
+      required: true,
+      default: "false",
+    },
+    ShopkeeperNotification: {
+      type: Boolean,
+      required: true,
+      default: "false",
     },
     products: [productSchema],
   },
