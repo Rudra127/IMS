@@ -57,7 +57,6 @@ const registerUser = async (req, res) => {
     
     res.cookie("Authtoken", token, {
       expires: new Date(Date.now() + expires),
-      httpOnly: true,
     });
     console.log("cookie created");
     res.status(200).json({ message: "User created in successfully" });

@@ -12,8 +12,8 @@ const loginUsers = async (req, res) => {
         console.log(token);
         res.cookie("Authtoken", token,{
           expires:new Date(Date.now()+expires),
-          httpOnly:true
         });
+        console.log("cookie set");
         res.status(200).json({ message: "User logged in successfully" });
         
         } else {

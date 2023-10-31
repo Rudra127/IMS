@@ -2,11 +2,7 @@ import express from "express";
 import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
 const app = express();
-// import jsonwebtoken from "jsonwebtoken";
-// const jwt = require("jsonwebtoken");
-
 import cors from "cors";
-// imp  ort loginUsers from "./Auth/login.js";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
 import productDelete from "./Products/deleteProduct.js";
@@ -28,8 +24,16 @@ import GetCategory from "./Category/GetCategory.js";
 import { GetCategoryImg } from "./GetCategoryImg.js";
 import UpdateCategory from "./Category/UpdateCategory.js";
 import { deleteImage } from "./DeleteBanner.js";
+import cookieParser from 'cookie-parser';
+import authMiddleware from "./Middleware/auth.js";
+import isLoggedIn from "./Middleware/islogin.js";
+// import jsonwebtoken from "jsonwebtoken";
+// const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
-// import cookieParser from 'cookie-parser';
+
+
+
+
 
 dotenvConfig();
 // conncted to db
@@ -37,7 +41,6 @@ const db = connectToMongo();
 
 const port = 4469;
 app.use(express.json());
-// app.use(cookieParser());
 app.use(
   cors({
     // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
@@ -49,14 +52,15 @@ app.use(
 
 //user Endpoints
 app.post("/register", registerUser);
-
+  
 app.post("/login", loginUsers);
 
 app.get("/logout", logout);
 
-//middleware for all
-// app.use(authMiddleware);
-
+//middleware for all 
+app.use(cookieParser());
+app.use(authMiddleware);
+app.use(isLoggedIn);
 //create product
 app.post("/createProducts", CreateProducts);
 
@@ -68,6 +72,9 @@ app.post("/uProducts", productUpdate);
 
 //delete product
 app.post("/dProducts", productDelete);
+
+
+
 
 // orbit's area //
 
