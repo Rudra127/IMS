@@ -2,11 +2,7 @@ import express from "express";
 import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
 const app = express();
-// import jsonwebtoken from "jsonwebtoken";
-// const jwt = require("jsonwebtoken");
-
 import cors from "cors";
-// imp  ort loginUsers from "./Auth/login.js";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
 import productCreate from "./Products/createProduct.js";
@@ -20,9 +16,15 @@ import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
 import { UpdateOrder } from "./Orders/UpdateOrder.js";
 import logout from "./Auth/logout.js";
-// import authMiddleware from "./Middleware/auth.js";
 import cookieParser from 'cookie-parser';
-import authmiddleware from "./Middleware/auth.js";
+import authMiddleware from "./Middleware/auth.js";
+// import jsonwebtoken from "jsonwebtoken";
+// const jwt = require("jsonwebtoken");
+// import authMiddleware from "./Middleware/auth.js";
+
+
+
+
 
 dotenvConfig();
 // conncted to db
@@ -48,7 +50,7 @@ app.get("/logout", logout);
 
 //middleware for all 
 app.use(cookieParser());
-app.use(authmiddleware);
+app.use(authMiddleware);
 
 //create product
 app.post("/cproducts", productCreate);
