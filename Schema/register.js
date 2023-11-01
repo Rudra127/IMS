@@ -58,12 +58,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // isConfirmed: {
-  //   type: String,
-  //   required: true,
-  //   default: "pending",
-  //   enum: ["pending", "approved", "canceled"],
-  // },
+  isConfirmed: {
+    type: String,
+    required: true,
+    default: "pending",
+    enum: ["pending", "approved", "canceled"],
+  },
 });
 userSchema.pre("save", function (next) {
   if (!this.cartId) {
