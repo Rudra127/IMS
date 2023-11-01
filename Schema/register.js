@@ -57,7 +57,13 @@ const userSchema =  new mongoose.Schema({
   confirmPass: {
     type: String,
     required: true,
-  }
+  },
+  status: {
+    type: String,
+    enum: ['approved', 'declined', 'pending'],
+    default: 'pending', // Set the default status to pending
+  },
+
 });
 userSchema.pre('save', function (next) {
   if (!this.cartId) {
