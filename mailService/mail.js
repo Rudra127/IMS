@@ -1,10 +1,10 @@
 import nodemailer from 'nodemailer';
-// import fs from 'fs';
-// import { fileURLToPath } from 'url';
-// import path from 'path'; // Import the path module
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path'; // Import the path module
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -40,7 +40,7 @@ async function sendRegistrationConfirmationEmail(employeeEmail) {
   const subject = 'Registration Confirmation';
   const text = 'Thank you for registering. Your registration has been received and is pending approval.';
   
-  // const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
 
   try {
     const response = await sendEmail(employeeEmail, subject, text, html);
@@ -54,7 +54,7 @@ async function sendRegistrationConfirmationEmail(employeeEmail) {
 async function sendApprovalNotificationEmail(managerEmail, employeeEmail) {
   const subject = 'Registration Approval';
   const text = `The registration for ${employeeEmail} has been approved.`;
-  // const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
 
   try {
     const response = await sendEmail(managerEmail, subject, text, html);
