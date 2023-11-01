@@ -3,12 +3,13 @@ import Cart from "../Schema/Cart.js";
 export const AddCart = async (req, res) => {
   try {
     const cartData = await req.body;
-    const cartid = await req.body.cartId;
-    console.log(cartData);
-    const existedOrder = Cart.findOne({ cartId: cartData.cartId });
+    // const cartid = await req.body.cartId;
+    console.log({ cartData: cartData.Products });
+    const existedOrder = await Cart.findOne({ cartId: cartData.cartId });
+    console.log(existedOrder);
     if (!existedOrder) {
       const createdOrder = await Cart.create(cartData);
-      console.log("cart created", createdOrder)
+      console.log("cart created", createdOrder);
       if (createdOrder) {
         res.status(200).json({ createdOrder });
       }

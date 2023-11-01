@@ -9,7 +9,7 @@ const loginUsers = async (req, res) => {
     if (existUser) {
       if (password === existUser.password) {
         let token = jwt.sign(
-          { email: existUser.email },
+          { email: existUser.email, cartId: existUser.cartId },
           process.env.JWT_SECRET
         );
         console.log(token);

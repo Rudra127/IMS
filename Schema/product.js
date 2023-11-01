@@ -26,6 +26,10 @@ const productSchema = mongoose.Schema({
     default: 0,
     required: true,
   },
+  minQty: {
+    type: Number,
+    default: 0,
+  },
   productImgName: {
     type: String,
     required: true,

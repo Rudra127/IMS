@@ -5,7 +5,7 @@ const app = express();
 import cors from "cors";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
-import productDelete from "./Products/deleteProduct.js";
+import jwt from "jsonwebtoken";
 import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
@@ -27,7 +27,12 @@ import cookieParser from "cookie-parser";
 import authMiddleware from "./Middleware/auth.js";
 import isLoggedIn from "./Middleware/islogin.js";
 import { DeleteProductImg } from "./DeleteProductImg.js";
-import UpdateProducts from "./Products/UpdateProducts.js";
+import UpdateProducts, {
+  UpdateProductsQty,
+} from "./Products/UpdateProducts.js";
+import DeleteCategory from "./Category/DeleteCategory.js";
+import DeleteProducts from "./Products/DeleteProducts.js";
+import CheckMinLimit from "./Products/CheckMinLimit.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
@@ -67,10 +72,22 @@ app.get("/GetProducts", GetProducts);
 
 //update product
 app.post("/UpdateProducts", UpdateProducts);
+app.post("/UpdateProductsQty", UpdateProductsQty);
+app.get("/CheckMinLimit", CheckMinLimit);
 
 //delete product
-app.post("/dProducts", productDelete);
-
+app.post("/DeleteProducts", DeleteProducts);
+app.get("/GetCartId", (req, res) => {
+  console.log(req.cookies);
+  const { Authtoken } = req.cookies;
+  const data = jwt.verify(Authtoken, process.env.JWT_SECRET);
+  console.log(data);
+  if (data.cartId) {
+    res.status(200).json({ cartId: data.cartId });
+  } else {
+    res.status(404).json({ message: "cartId not found", isCartId: false });
+  }
+});
 // orbit's area //
 
 app.post("/CreateCart", AddCart);
@@ -148,6 +165,7 @@ app.post("/delete-category-img", async (req, res) => {
 app.post("/createCategory", createCategory);
 app.get("/GetCategory", GetCategory);
 app.post("/UpdateCategory", UpdateCategory);
+app.post("/DeleteCategory", DeleteCategory);
 
 app.get("/categoryImg/:imageName", GetCategoryImg);
 
