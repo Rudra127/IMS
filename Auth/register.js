@@ -1,8 +1,7 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import RegisterUsers from "../Schema/register.js";
-// import Cart from "../Schema/Cart.js";
-// import AddCart from "../Cart/AddCart.js";
+import { sendRegistrationConfirmationEmail, sendApprovalNotificationEmail, sendDeclineNotificationEmail} from "../mailService/mail.js"; // Import your email sending functions
+
 const registerUser = async (req, res) => {
   try {
     const {
@@ -15,8 +14,8 @@ const registerUser = async (req, res) => {
       email,
       password,
       confirmPass,
+      branchManagerApproval,
     } = req.body;
-    const expires = 1000 * 60 * 60 * 24 * 15;
 
     // Check if the password and confirm password match
     if (password !== confirmPass) {
@@ -30,11 +29,17 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash the password before saving it to the database
-    // const saltRounds = 10;
-    // const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // Set the default userStatus to "pending"
+    const userStatus = "approved";
 
-    // Create a new user
+    // If branchManagerApproval is true, set userStatus to "approved"
+    // if (branchManagerApproval) {
+    //   userStatus = "approved";
+    // } else if (branchManagerApproval === false) {
+    //   userStatus = "declined";
+    // }
+
+    // Create a new user with the specified status
     const newUser = new RegisterUsers({
       cartId,
       empId,
@@ -45,24 +50,43 @@ const registerUser = async (req, res) => {
       email,
       password: password,
       confirmPass: password,
+      status: userStatus, // Set the status based on branchManagerApproval
     });
 
     // Save the user to the database
     await newUser.save();
 
-    let token = jwt.sign(
-      { email: email, cartId: cartId },
-      process.env.JWT_SECRET
-    );
+    // Send a registration confirmation email
+    try {
+      await sendRegistrationConfirmationEmail(email);
+    } catch (error) {
+      console.error("Error sending registration confirmation email", error);
+    }
+
+    // If the user is approved, send an approval email
+    if (userStatus === "approved") {
+      // Replace 'managerEmail' with the actual manager's email address
+      const managerEmail = "teamsquare678@gmail.com"; // Change this to your logic to get the manager's email
+      try {
+        await sendApprovalNotificationEmail(managerEmail, email);
+      } catch (error) {
+        console.error("Error sending approval email", error);
+      }
+    } else if (userStatus === "declined") {
+      // If the user is declined, send a decline email
+      try {
+        await sendDeclineNotificationEmail(managerEmail, email);
+      } catch (error) {
+        console.error("Error sending decline email", error);
+      }
+    }
+
+    let token = jwt.sign({ email: email, cartId: cartId }, process.env.JWT_SECRET);
     console.log(token);
 
-    res.cookie("Authtoken", token, {
-      expires: new Date(Date.now() + expires),
-      sameSite: "none",
-      secure: true,
-    });
-    console.log("cookie created");
-    res.status(200).json({ message: "User created in successfully" });
+    res.cookie("Authtoken", token);
+
+    res.status(200).json({ message: "User created successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
