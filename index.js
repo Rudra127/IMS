@@ -6,7 +6,6 @@ import cors from "cors";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
 import productDelete from "./Products/deleteProduct.js";
-import productUpdate from "./Products/updateProduct.js";
 import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
@@ -27,6 +26,8 @@ import { deleteImage } from "./DeleteBanner.js";
 import cookieParser from "cookie-parser";
 import authMiddleware from "./Middleware/auth.js";
 import isLoggedIn from "./Middleware/islogin.js";
+import { DeleteProductImg } from "./DeleteProductImg.js";
+import UpdateProducts from "./Products/UpdateProducts.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
@@ -65,7 +66,7 @@ app.post("/createProducts", CreateProducts);
 app.get("/GetProducts", GetProducts);
 
 //update product
-app.post("/uProducts", productUpdate);
+app.post("/UpdateProducts", UpdateProducts);
 
 //delete product
 app.post("/dProducts", productDelete);
@@ -93,6 +94,25 @@ app.post(
 );
 
 app.get("/ProductImg/:imageName", GetProductImg);
+
+app.post("/delete-product-img", async (req, res) => {
+  try {
+    const { filename } = req.body; // Assuming you send the filename in the request body
+
+    if (!filename) {
+      return res
+        .status(400)
+        .json({ error: "Filename is required in the request body" });
+    }
+
+    await DeleteProductImg(filename);
+
+    res.status(200).json({ message: "Banner image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting banner image:", error);
+    res.status(500).json({ error: "Failed to delete banner image" });
+  }
+});
 
 app.post(
   "/upload-category-img",
