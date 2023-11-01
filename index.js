@@ -34,6 +34,7 @@ import DeleteCategory from "./Category/DeleteCategory.js";
 import DeleteProducts from "./Products/DeleteProducts.js";
 import CheckMinLimit from "./Products/CheckMinLimit.js";
 import GetEmployees from "./Employee/GetEmployees.js";
+import UpdateEmployees from "./Employee/UpdateEmployees.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
@@ -46,7 +47,11 @@ const port = 4469;
 app.use(express.json());
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
+    origin: [
+      process.env.CLIENT_URL_1,
+      process.env.CLIENT_URL_2,
+      process.env.CLIENT_URL_3,
+    ],
     methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"], // Corrected "UPDATE" to "UPDATE"
     credentials: true,
     withCredentials: true,
@@ -75,7 +80,6 @@ app.get("/GetProducts", GetProducts);
 app.post("/UpdateProducts", UpdateProducts);
 app.post("/UpdateProductsQty", UpdateProductsQty);
 app.get("/CheckMinLimit", CheckMinLimit);
-app.get("/GetEmployees", GetEmployees);
 //delete product
 app.post("/DeleteProducts", DeleteProducts);
 app.get("/GetCartId", (req, res) => {
@@ -169,6 +173,9 @@ app.post("/UpdateCategory", UpdateCategory);
 app.post("/DeleteCategory", DeleteCategory);
 
 app.get("/categoryImg/:imageName", GetCategoryImg);
+
+app.get("/GetEmployees", GetEmployees);
+app.post("/UpdateEmployee", UpdateEmployees);
 
 // orbit's area END //
 
