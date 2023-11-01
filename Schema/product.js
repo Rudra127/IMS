@@ -17,6 +17,10 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  actualQuantity: {
+    type: Number,
+    default: 1,
+  },
   quantityInStock: {
     type: Number,
     default: 0,

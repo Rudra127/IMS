@@ -5,9 +5,8 @@ import RegisterUsers from "../Schema/register.js";
 // import AddCart from "../Cart/AddCart.js";
 const registerUser = async (req, res) => {
   try {
-
     const {
-      cartId, 
+      cartId,
       empId,
       username,
       dept,
@@ -32,7 +31,7 @@ const registerUser = async (req, res) => {
     }
 
     // Hash the password before saving it to the database
-    // const saltRounds = 10; 
+    // const saltRounds = 10;
     // const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create a new user
@@ -44,19 +43,23 @@ const registerUser = async (req, res) => {
       designation,
       mNumber,
       email,
-      password: password ,
+      password: password,
       confirmPass: password,
-
     });
 
     // Save the user to the database
     await newUser.save();
 
-    let token = jwt.sign({ email: email, cartId : cartId }, process.env.JWT_SECRET);
+    let token = jwt.sign(
+      { email: email, cartId: cartId },
+      process.env.JWT_SECRET
+    );
     console.log(token);
-    
+
     res.cookie("Authtoken", token, {
       expires: new Date(Date.now() + expires),
+      sameSite: "none",
+      secure: true,
     });
     console.log("cookie created");
     res.status(200).json({ message: "User created in successfully" });

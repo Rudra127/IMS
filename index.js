@@ -24,16 +24,12 @@ import GetCategory from "./Category/GetCategory.js";
 import { GetCategoryImg } from "./GetCategoryImg.js";
 import UpdateCategory from "./Category/UpdateCategory.js";
 import { deleteImage } from "./DeleteBanner.js";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import authMiddleware from "./Middleware/auth.js";
 import isLoggedIn from "./Middleware/islogin.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
-
-
-
-
 
 dotenvConfig();
 // conncted to db
@@ -43,21 +39,22 @@ const port = 4469;
 app.use(express.json());
 app.use(
   cors({
-    // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
     origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
-    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
+    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"], // Corrected "UPDATE" to "UPDATE"
     credentials: true,
+    withCredentials: true,
   })
 );
-
+app.use("/categoryImg", express.static("categoryImg"));
+app.use("/ProductImg", express.static("ProductImg"));
 //user Endpoints
 app.post("/register", registerUser);
-  
+
 app.post("/login", loginUsers);
 
 app.get("/logout", logout);
 
-//middleware for all 
+//middleware for all
 app.use(cookieParser());
 app.use(authMiddleware);
 app.use(isLoggedIn);
@@ -72,9 +69,6 @@ app.post("/uProducts", productUpdate);
 
 //delete product
 app.post("/dProducts", productDelete);
-
-
-
 
 // orbit's area //
 
