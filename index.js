@@ -5,8 +5,7 @@ const app = express();
 import cors from "cors";
 import registerUser from "./Auth/register.js";
 import loginUsers from "./Auth/login.js";
-import productDelete from "./Products/deleteProduct.js";
-import productUpdate from "./Products/updateProduct.js";
+import jwt from "jsonwebtoken";
 import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
 import { CreateOrder } from "./Orders/CreateOrder.js";
@@ -24,16 +23,20 @@ import GetCategory from "./Category/GetCategory.js";
 import { GetCategoryImg } from "./GetCategoryImg.js";
 import UpdateCategory from "./Category/UpdateCategory.js";
 import { deleteImage } from "./DeleteBanner.js";
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import authMiddleware from "./Middleware/auth.js";
 import isLoggedIn from "./Middleware/islogin.js";
+import { DeleteProductImg } from "./DeleteProductImg.js";
+import UpdateProducts, {
+  UpdateProductsQty,
+} from "./Products/UpdateProducts.js";
+import DeleteCategory from "./Category/DeleteCategory.js";
+import DeleteProducts from "./Products/DeleteProducts.js";
+import CheckMinLimit from "./Products/CheckMinLimit.js";
+import GetEmployees from "./Employee/GetEmployees.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
-
-
-
-
 
 dotenvConfig();
 // conncted to db
@@ -43,21 +46,22 @@ const port = 4469;
 app.use(express.json());
 app.use(
   cors({
-    // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
     origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
-    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
+    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"], // Corrected "UPDATE" to "UPDATE"
     credentials: true,
+    withCredentials: true,
   })
 );
-
+app.use("/categoryImg", express.static("categoryImg"));
+app.use("/ProductImg", express.static("ProductImg"));
 //user Endpoints
 app.post("/register", registerUser);
-  
+
 app.post("/login", loginUsers);
 
 app.get("/logout", logout);
 
-//middleware for all 
+//middleware for all
 app.use(cookieParser());
 app.use(authMiddleware);
 app.use(isLoggedIn);
@@ -68,14 +72,23 @@ app.post("/createProducts", CreateProducts);
 app.get("/GetProducts", GetProducts);
 
 //update product
-app.post("/uProducts", productUpdate);
-
+app.post("/UpdateProducts", UpdateProducts);
+app.post("/UpdateProductsQty", UpdateProductsQty);
+app.get("/CheckMinLimit", CheckMinLimit);
+app.get("/GetEmployees", GetEmployees);
 //delete product
-app.post("/dProducts", productDelete);
-
-
-
-
+app.post("/DeleteProducts", DeleteProducts);
+app.get("/GetCartId", (req, res) => {
+  console.log(req.cookies);
+  const { Authtoken } = req.cookies;
+  const data = jwt.verify(Authtoken, process.env.JWT_SECRET);
+  console.log(data);
+  if (data.cartId) {
+    res.status(200).json({ cartId: data.cartId });
+  } else {
+    res.status(404).json({ message: "cartId not found", isCartId: false });
+  }
+});
 // orbit's area //
 
 app.post("/CreateCart", AddCart);
@@ -99,6 +112,25 @@ app.post(
 );
 
 app.get("/ProductImg/:imageName", GetProductImg);
+
+app.post("/delete-product-img", async (req, res) => {
+  try {
+    const { filename } = req.body; // Assuming you send the filename in the request body
+
+    if (!filename) {
+      return res
+        .status(400)
+        .json({ error: "Filename is required in the request body" });
+    }
+
+    await DeleteProductImg(filename);
+
+    res.status(200).json({ message: "Banner image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting banner image:", error);
+    res.status(500).json({ error: "Failed to delete banner image" });
+  }
+});
 
 app.post(
   "/upload-category-img",
@@ -134,6 +166,7 @@ app.post("/delete-category-img", async (req, res) => {
 app.post("/createCategory", createCategory);
 app.get("/GetCategory", GetCategory);
 app.post("/UpdateCategory", UpdateCategory);
+app.post("/DeleteCategory", DeleteCategory);
 
 app.get("/categoryImg/:imageName", GetCategoryImg);
 

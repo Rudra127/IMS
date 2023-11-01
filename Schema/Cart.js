@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 
 const productSchema = mongoose.Schema({
-  id: {
+  productId: {
     type: Number,
     required: true,
   },
-  title: {
+  productName: {
+    type: String,
+    required: true,
+  },
+
+  description: {
     type: String,
     required: true,
   },
@@ -13,15 +18,15 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
+  productImgName: {
     type: String,
     required: true,
   },
-  imageUrl: {
+  productImgPath: {
     type: String,
     required: true,
   },
-  quantity: {
+  actualQuantity: {
     type: Number, // You can adjust the type based on your actual data
   },
 });
@@ -32,7 +37,10 @@ const cartSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
-  Products: [productSchema],
+  Products: {
+    type: [productSchema],
+    default: () => [],
+  },
 });
 
 const Cart = mongoose.model("Cart", cartSchema);

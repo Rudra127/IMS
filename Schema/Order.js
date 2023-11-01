@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const productSchema = mongoose.Schema({
-  id: {
+  productId: {
     type: Number,
     required: true,
   },
-  title: {
+  productName: {
     type: String,
     required: true,
   },
@@ -17,7 +17,7 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  imageUrl: {
+  productImgPath: {
     type: String,
     required: true,
   },
