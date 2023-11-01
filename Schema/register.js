@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 // import jwt  from "jsonwebtoken";
 // here we have to add the deptartment number as we make them such as our dept number will be 07(computer).
-const validDepartments = ['Dept1', 'Dept2', 'Dept3'];
+const validDepartments = ["Dept1", "Dept2", "Dept3"];
 
 function generateRandomCartId() {
   return Math.floor(100000 + Math.random() * 900000);
 }
 
-const userSchema =  new mongoose.Schema({
-  //dept, designation, number, username, 
-  cartId:{
-    type: Number, 
+const userSchema = new mongoose.Schema({
+  //dept, designation, number, username,
+  cartId: {
+    type: Number,
     unique: true,
   },
 
@@ -31,12 +31,12 @@ const userSchema =  new mongoose.Schema({
       validator: function (value) {
         return validDepartments.includes(value);
       },
-      message: 'Invalid department',
+      message: "Invalid department",
     },
   },
   role: {
     type: String,
-    default: "employee"
+    default: "employee",
   },
   designation: {
     type: String,
@@ -57,15 +57,21 @@ const userSchema =  new mongoose.Schema({
   confirmPass: {
     type: String,
     required: true,
-  }
+  },
+  // isConfirmed: {
+  //   type: String,
+  //   required: true,
+  //   default: "pending",
+  //   enum: ["pending", "approved", "canceled"],
+  // },
 });
-userSchema.pre('save', function (next) {
+userSchema.pre("save", function (next) {
   if (!this.cartId) {
     this.cartId = generateRandomCartId();
   }
   next();
 });
 
-const registerUsers = mongoose.model('RegisterUsers', userSchema);
+const registerUsers = mongoose.model("RegisterUsers", userSchema);
 
 export default registerUsers;
