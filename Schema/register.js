@@ -72,6 +72,8 @@ userSchema.pre("save", function (next) {
   next();
 });
 
+
+
 const registerUsers = mongoose.model("RegisterUsers", userSchema);
 
 export default registerUsers;

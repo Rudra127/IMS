@@ -18,5 +18,7 @@ const GetEmployees = async (req, res) => {
     res.status(500).json({ error: err.message });
     console.log(err);
   }
+
+  
 };
 export default GetEmployees;
