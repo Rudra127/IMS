@@ -33,6 +33,7 @@ import UpdateProducts, {
 import DeleteCategory from "./Category/DeleteCategory.js";
 import DeleteProducts from "./Products/DeleteProducts.js";
 import CheckMinLimit from "./Products/CheckMinLimit.js";
+import GetEmployees from "./Employee/GetEmployees.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
@@ -74,7 +75,7 @@ app.get("/GetProducts", GetProducts);
 app.post("/UpdateProducts", UpdateProducts);
 app.post("/UpdateProductsQty", UpdateProductsQty);
 app.get("/CheckMinLimit", CheckMinLimit);
-
+app.get("/GetEmployees", GetEmployees);
 //delete product
 app.post("/DeleteProducts", DeleteProducts);
 app.get("/GetCartId", (req, res) => {
