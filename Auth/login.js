@@ -7,7 +7,6 @@ const loginUsers = async (req, res) => {
     const existUser = await registerUsers.findOne({ email });
     const expires = 1000 * 60 * 60 * 24 * 15;
     if (existUser) {
-      if(isConfirmed === "approved") {
         if (password === existUser.password) {
           let token = jwt.sign(
             { email: existUser.email, cartId: existUser.cartId },
@@ -26,11 +25,7 @@ const loginUsers = async (req, res) => {
           res.status(401).json({ message: "Incorrect password" });
         }
       }
-        else{
-          console.log("you're request is declined or in pending. please contact Branch Manager for this.");
-        }
-    
-    } else {
+     else {
       res.status(404).json({ message: "User not found" });
     }
   } catch (error) {

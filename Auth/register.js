@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    // Check if the user already exists
+    // Check if the user alr  eady exists
     const existingUser = await RegisterUsers.findOne({ username });
 
     if (existingUser) {
