@@ -1,7 +1,6 @@
-import jwt from "jsonwebtoken";
 import RegisterUsers from "../Schema/register.js";
 import { sendRegistrationConfirmationEmail, sendApprovalNotificationEmail, sendDeclineNotificationEmail} from "../mailService/mail.js"; // Import your email sending functions
-
+import path from "path";
 const registerUser = async (req, res) => {
   try {
     const {
@@ -30,14 +29,14 @@ const registerUser = async (req, res) => {
     }
 
     // Set the default userStatus to "pending"
-    const userStatus = "approved";
+    let userStatus = "pending";
 
     // If branchManagerApproval is true, set userStatus to "approved"
-    // if (branchManagerApproval) {
-    //   userStatus = "approved";
-    // } else if (branchManagerApproval === false) {
-    //   userStatus = "declined";
-    // }
+    if (branchManagerApproval) {
+      userStatus = "approved";
+    } else if (branchManagerApproval === false) {
+      userStatus = "declined";
+    }
 
     // Create a new user with the specified status
     const newUser = new RegisterUsers({
@@ -50,11 +49,18 @@ const registerUser = async (req, res) => {
       email,
       password: password,
       confirmPass: password,
-      status: userStatus, // Set the status based on branchManagerApproval
+      isConfirmed: userStatus, // Set the status based on branchManagerApproval
     });
 
     // Save the user to the database
     await newUser.save();
+
+    // Define the data you want to pass to the EJS template
+    const data = {
+      firstname: "First Name", // Replace with the actual user's first name
+      username: "Username",   // Replace with the actual username
+      loginLink: "https://your-login-link.com", // Replace with the actual login link
+    };
 
     // Send a registration confirmation email
     try {
@@ -80,13 +86,18 @@ const registerUser = async (req, res) => {
         console.error("Error sending decline email", error);
       }
     }
+    const registrationData ={
+      firstname: req.body.username, // Use the user's first name from the request
+      username: req.body.email,   // Use the user's username from the request
+      password: req.body.password,
+      loginLink: 'https://instagram.com',
+ 
+    }
 
-    let token = jwt.sign({ email: email, cartId: cartId }, process.env.JWT_SECRET);
-    console.log(token);
+  console.log(registrationData);
+  res.set('Content-Type', 'text/html');
+  res.render('registrationconfirm', { data: registrationData });
 
-    res.cookie("Authtoken", token);
-
-    res.status(200).json({ message: "User created successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });

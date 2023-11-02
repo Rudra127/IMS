@@ -40,7 +40,7 @@ async function sendRegistrationConfirmationEmail(employeeEmail) {
   const subject = 'Registration Confirmation';
   const text = 'Thank you for registering. Your registration has been received and is pending approval.';
   
-  const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationconfirm.ejs'), 'utf8');
 
   try {
     const response = await sendEmail(employeeEmail, subject, text, html);
@@ -54,7 +54,7 @@ async function sendRegistrationConfirmationEmail(employeeEmail) {
 async function sendApprovalNotificationEmail(managerEmail, employeeEmail) {
   const subject = 'Registration Approval';
   const text = `The registration for ${employeeEmail} has been approved.`;
-  const html = fs.readFileSync(path.join(__dirname, 'registrationconfirm.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationconfirm.ejs'), 'utf8');
 
   try {
     const response = await sendEmail(managerEmail, subject, text, html);
