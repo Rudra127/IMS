@@ -42,10 +42,17 @@ import UpdateSurvey from "./SurveyForm/UpdateSurvey.js";
 // import jsonwebtoken from "jsonwebtoken";
 // const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
+import path from "path";
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenvConfig();
 // conncted to db
 const db = connectToMongo();
+const viewsPath = path.join(__dirname, 'mailService/views');
+app.set('views', viewsPath);
+app.set('view engine', 'ejs');
 
 const port = 4469;
 app.use(express.json());
@@ -61,6 +68,8 @@ app.use(
     withCredentials: true,
   })
 );
+
+
 app.use("/categoryImg", express.static("categoryImg"));
 app.use("/ProductImg", express.static("ProductImg"));
 //user Endpoints

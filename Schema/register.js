@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
+  isConfirmed: {
     type: String,
     enum: ["approved", "declined", "pending"],
     default: "pending", // Set the default status to pending
