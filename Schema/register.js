@@ -36,7 +36,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "employee",
+    default: "branch manager",
+    enum: ["employee", "branch manager"],
   },
   designation: {
     type: String,
@@ -60,10 +61,9 @@ const userSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['approved', 'declined', 'pending'],
-    default: 'pending', // Set the default status to pending
+    enum: ["approved", "declined", "pending"],
+    default: "pending", // Set the default status to pending
   },
-
 });
 userSchema.pre("save", function (next) {
   if (!this.cartId) {
@@ -71,8 +71,6 @@ userSchema.pre("save", function (next) {
   }
   next();
 });
-
-
 
 const registerUsers = mongoose.model("RegisterUsers", userSchema);
 
