@@ -69,13 +69,20 @@
   async function sendApprovalNotificationEmail(employeeEmail) {
     const subject = 'Registration Approval';
     const user = await RegisterUsers.findOne({ email: employeeEmail });
+    
     if (!user) {
       console.error('User not found for email: ' + employeeEmail);
       throw new Error('User not found');
     }
+    
     const temppass = generateRandomPassword();
+  
+    // Update the temppass field in the user document
+    await RegisterUsers.updateOne({ email: employeeEmail }, { password: temppass });
+  
     const text = `The registration for ${user.fullName} has been approved.`;
     const loginLink = 'https://instagram.com'; // Replace with the actual login link
+  
     const html = ejs.render(fs.readFileSync(path.join(__dirname, 'views', 'registrationApproved.ejs'), 'utf8'), {
       data: {
         firstname: user.fullName,
@@ -84,9 +91,9 @@
         loginLink: loginLink,
       },
     });
-    
+  
     try {
-      const response = await sendEmail(employeeEmail,subject, text, html);
+      const response = await sendEmail(employeeEmail, subject, text, html);
       console.log('Email sent: ' + response);
     } catch (error) {
       console.error(error);
