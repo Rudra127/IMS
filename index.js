@@ -35,6 +35,13 @@ import DeleteProducts from "./Products/DeleteProducts.js";
 import CheckMinLimit from "./Products/CheckMinLimit.js";
 import GetEmployees from "./Employee/GetEmployees.js";
 import UpdateEmployees from "./Employee/UpdateEmployees.js";
+import CreateSurveyForm from "./SurveyForm/CreateSurveyForm.js";
+import GetSurvey from "./SurveyForm/GetSurvey.js";
+import DeleteSurvey from "./SurveyForm/DeleteSurvey.js";
+import UpdateSurvey from "./SurveyForm/UpdateSurvey.js";
+// import jsonwebtoken from "jsonwebtoken";
+// const jwt = require("jsonwebtoken");
+// import authMiddleware from "./Middleware/auth.js";
 import path from "path";
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -182,6 +189,11 @@ app.get("/categoryImg/:imageName", GetCategoryImg);
 
 app.get("/GetEmployees", GetEmployees);
 app.post("/UpdateEmployee", UpdateEmployees);
+
+app.post("/CreateSurveyForm", CreateSurveyForm);
+app.get("/GetSurvey", GetSurvey);
+app.post("/UpdateSurvey", UpdateSurvey);
+app.post("/DeleteSurvey", DeleteSurvey);
 
 // orbit's area END //
 
