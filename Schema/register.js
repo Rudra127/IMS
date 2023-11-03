@@ -1,22 +1,16 @@
 import mongoose from "mongoose";
-// import jwt  from "jsonwebtoken";
-// here we have to add the deptartment number as we make them such as our dept number will be 07(computer).
-const validDepartments = ["Dept1", "Dept2", "Dept3"];
 
 function generateRandomCartId() {
   return Math.floor(100000 + Math.random() * 900000);
 }
 
 const userSchema = new mongoose.Schema({
-  //dept, designation, number, username,
   cartId: {
     type: Number,
     unique: true,
   },
-
   empId: {
-    type: Number,
-    unique: true,
+    type: Number, // No need to make it unique
   },
   username: {
     type: String,
@@ -27,12 +21,6 @@ const userSchema = new mongoose.Schema({
   dept: {
     type: String,
     required: true,
-    validate: {
-      validator: function (value) {
-        return validDepartments.includes(value);
-      },
-      message: "Invalid department",
-    },
   },
   role: {
     type: String,
@@ -44,6 +32,12 @@ const userSchema = new mongoose.Schema({
   },
   mNumber: {
     type: String,
+    validate: {
+      validator: function (value) {
+        return value.length <= 10;
+      },
+      message: "mNumber cannot be longer than 10 characters",
+    },
   },
   email: {
     type: String,
@@ -62,13 +56,24 @@ const userSchema = new mongoose.Schema({
   isConfirmed: {
     type: String,
     enum: ["approved", "declined", "pending"],
-    default: "pending", // Set the default status to pending
+    default: "pending",
   },
 });
-userSchema.pre("save", function (next) {
+
+userSchema.pre("save", async function (next) {
   if (!this.cartId) {
     this.cartId = generateRandomCartId();
   }
+
+  if (!this.empId) {
+    const lastUser = await registerUsers.findOne({}, {}, { sort: { empId: -1 } });
+    if (lastUser) {
+      this.empId = lastUser.empId + 1;
+    } else {
+      this.empId = 1;
+    }
+  }
+
   next();
 });
 

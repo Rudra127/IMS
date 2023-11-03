@@ -36,11 +36,11 @@ function sendEmail(to, subject, text, html) {
   });
 }
 
-async function sendRegistrationConfirmationEmail(employeeEmail) {
+async function sendRegistrationPendingEmail(employeeEmail) {
   const subject = 'Registration Confirmation';
   const text = 'Thank you for registering. Your registration has been received and is pending approval.';
   
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationconfirm.ejs'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationPending.ejs'), 'utf8');
 
   try {
     const response = await sendEmail(employeeEmail, subject, text, html);
@@ -80,7 +80,7 @@ async function sendDeclineNotificationEmail(managerEmail, employeeEmail) {
 }
 
 export {
-  sendRegistrationConfirmationEmail,
+  sendRegistrationPendingEmail,
   sendApprovalNotificationEmail,
   sendDeclineNotificationEmail,
 };
