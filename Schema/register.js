@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
+  fullName:{
+    type: String,
+    required: true,
+  },
   dept: {
     type: String,
     required: true,
