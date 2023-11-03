@@ -68,11 +68,9 @@ const registerUser = async (req, res) => {
     } catch (error) {
       console.error("Error sending registration confirmation email", error);
     }
-
-    // If the user is approved, send an approval email
+    const managerEmail = "teamsquare678@gmail.com"; 
     if (userStatus === "approved") {
       // Replace 'managerEmail' with the actual manager's email address
-      const managerEmail = "teamsquare678@gmail.com"; // Change this to your logic to get the manager's email
       try {
         await sendApprovalNotificationEmail(managerEmail, email);
       } catch (error) {
