@@ -97,8 +97,12 @@
   async function sendDeclineNotificationEmail(employeeEmail) {
     const subject = 'Registration Decline';
     const text = `The registration for ${employeeEmail} has been declined.`;
-    const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationDecline.ejs'), 'utf8');
+    const user = await RegisterUsers.findOne({ email: employeeEmail });
 
+    const html = ejs.render(fs.readFileSync(path.join(__dirname, 'views', 'registrationDecline.ejs'), 'utf8'), {
+      data: { firstname: user.fullName },
+      
+    });
     try {
       const response = await sendEmail(employeeEmail,subject, text, html);
       console.log('Email sent: ' + response);
