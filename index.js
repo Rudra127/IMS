@@ -40,19 +40,20 @@ import GetSurvey from "./SurveyForm/GetSurvey.js";
 import DeleteSurvey from "./SurveyForm/DeleteSurvey.js";
 import UpdateSurvey from "./SurveyForm/UpdateSurvey.js";
 // import jsonwebtoken from "jsonwebtoken";
-// const jwt = require("jsonwebtoken");
 // import authMiddleware from "./Middleware/auth.js";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
+import { BranchManagerPdfGenerator } from "./PDF Generation/BranchManagerPdfGenerate.js";
+import { EmployeePdfGenerator } from "./PDF Generation/EmployeePdfGenerate.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenvConfig();
 // conncted to db
 const db = connectToMongo();
-const viewsPath = path.join(__dirname, 'mailService/views');
-app.set('views', viewsPath);
-app.set('view engine', 'ejs');
+const viewsPath = path.join(__dirname, "mailService/views");
+app.set("views", viewsPath);
+app.set("view engine", "ejs");
 
 const port = 4469;
 app.use(express.json());
@@ -68,7 +69,6 @@ app.use(
     withCredentials: true,
   })
 );
-
 
 app.use("/categoryImg", express.static("categoryImg"));
 app.use("/ProductImg", express.static("ProductImg"));
@@ -194,6 +194,11 @@ app.post("/CreateSurveyForm", CreateSurveyForm);
 app.get("/GetSurvey", GetSurvey);
 app.post("/UpdateSurvey", UpdateSurvey);
 app.post("/DeleteSurvey", DeleteSurvey);
+
+// PDF Generation //
+
+app.post("/generate-pdf-employee", EmployeePdfGenerator);
+app.post("/generate-pdf-branch-manager", BranchManagerPdfGenerator);
 
 // orbit's area END //
 
