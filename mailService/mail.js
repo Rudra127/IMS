@@ -36,11 +36,11 @@ function sendEmail(to, subject, text, html) {
   });
 }
 
-async function sendRegistrationConfirmationEmail(employeeEmail) {
+async function sendRegistrationPendingEmail(employeeEmail) {
   const subject = 'Registration Confirmation';
   const text = 'Thank you for registering. Your registration has been received and is pending approval.';
   
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationconfirm.ejs'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationPending.ejs'), 'utf8');
 
   try {
     const response = await sendEmail(employeeEmail, subject, text, html);
@@ -54,7 +54,7 @@ async function sendRegistrationConfirmationEmail(employeeEmail) {
 async function sendApprovalNotificationEmail(managerEmail, employeeEmail) {
   const subject = 'Registration Approval';
   const text = `The registration for ${employeeEmail} has been approved.`;
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationconfirm.ejs'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationApproved.ejs'), 'utf8');
 
   try {
     const response = await sendEmail(managerEmail, subject, text, html);
@@ -68,9 +68,10 @@ async function sendApprovalNotificationEmail(managerEmail, employeeEmail) {
 async function sendDeclineNotificationEmail(managerEmail, employeeEmail) {
   const subject = 'Registration Decline';
   const text = `The registration for ${employeeEmail} has been declined.`;
+  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationDecline.ejs'), 'utf8');
 
   try {
-    const response = await sendEmail(managerEmail, subject, text);
+    const response = await sendEmail(managerEmail, subject, text, html);
     console.log('Email sent: ' + response);
   } catch (error) {
     console.error(error);
@@ -79,7 +80,7 @@ async function sendDeclineNotificationEmail(managerEmail, employeeEmail) {
 }
 
 export {
-  sendRegistrationConfirmationEmail,
+  sendRegistrationPendingEmail,
   sendApprovalNotificationEmail,
   sendDeclineNotificationEmail,
 };
