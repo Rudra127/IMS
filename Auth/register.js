@@ -69,7 +69,7 @@ console.log(req.body);
         secure: true,
       });
     }
-    console.log("cookie done");
+    console.log("branch managercookie done ");
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {

@@ -26,7 +26,7 @@ const loginUsers = async (req, res) => {
           }
           else{
           let token = jwt.sign(
-            { email: existUser.email, cartId: existUser.cartId, panel: existUser.panel},
+            { email: email, cartId: cartId, panel: panel},
             process.env.JWT_SECRET
           );
           console.log(token);
