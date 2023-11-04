@@ -80,8 +80,7 @@ app.get("/logout", logout);
 
 //middleware for all
 app.use(cookieParser());
-app.use(isLoggedIn);
-
+// app.use(isLoggedIn);
 
 app.post("/createProducts", CreateProducts);
 
@@ -198,6 +197,9 @@ app.post("/DeleteSurvey", DeleteSurvey);
 
 app.post("/generate-pdf-employee", EmployeePdfGenerator);
 app.post("/generate-pdf-branch-manager", BranchManagerPdfGenerator);
+
+
+app.post("/CreateSubCategory", CreateSubCategory)
 
 // orbit's area END //
 
