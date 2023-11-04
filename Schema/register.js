@@ -59,19 +59,27 @@ const userSchema = new mongoose.Schema({
     default: "pending",
   },
 });
-
 userSchema.pre("save", async function (next) {
   if (!this.cartId) {
     this.cartId = generateRandomCartId();
   }
 
   if (!this.empId) {
-    const lastUser = await registerUsers.findOne({}, {}, { sort: { empId: -1 } });
+    const lastUser = await registerUsers.findOne(
+      {},
+      {},
+      { sort: { empId: -1 } }
+    );
     if (lastUser) {
       this.empId = lastUser.empId + 1;
     } else {
       this.empId = 1;
     }
+  }
+
+  // Set isConfirmed to "approved" if the role is "branch manager"
+  if (this.role === "branch manager") {
+    this.isConfirmed = "approved";
   }
 
   next();

@@ -21,17 +21,28 @@ export const EmployeePdfGenerator = async (req, res) => {
       cartId: employeeData?.cartId,
     });
     const allProducts = orderData.reduce((result, current) => {
-      if (current.products) {
-        result.push(...current.products);
-      }
+      let createdAt = current.createdAt;
+      let orderId = current.orderId;
+      current.products.forEach((product) => {
+        result.push({ product, createdAt: createdAt, orderId });
+      });
       return result;
     }, []);
+    console.log(allProducts);
+
+    function addCellHeader(text, x, y, width, height, align = "center") {
+      doc.lineWidth(2); // Set the border line width
+      doc.strokeColor("#2196f3"); // Set the border color to black
+      doc.rect(x, y, width, height).stroke(); // Draw the cell border
+      doc.fillColor("#673ab7"); // Set the text color to black
+      doc.text(text, x, y + 3, { width, height, align }); // Add cell content
+    }
 
     function addCell(text, x, y, width, height, align = "center") {
-      // doc.fontSize(14).font("Bree Serif").fillColor("#673ab7");
+      doc.lineWidth(2); // Set the border line width
+      doc.strokeColor("#2196f3"); // Set the border color to black
       doc.rect(x, y, width, height).stroke(); // Draw the cell border
-      // doc.fontSize(14).font("Bree Serif").fillColor("black");
-
+      doc.fillColor("black"); // Set the text color to black
       doc.text(text, x, y + 3, { width, height, align }); // Add cell content
     }
     // Create a function to split an array into chunks
@@ -141,49 +152,63 @@ export const EmployeePdfGenerator = async (req, res) => {
       const tableX = margin;
       let tableY = doc.y + 20;
       const tableWidth = doc.page.width - margin * 2;
-      const columnWidth = tableWidth / 3;
+      const columnWidth = tableWidth / 4;
       const rowHeight = 30;
 
       // Add table headers with borders
       doc.fontSize(14).font("Bree Serif").fillColor("#673ab7");
 
-      addCell("No.", tableX, tableY, columnWidth, rowHeight);
-      addCell(
+      addCellHeader("Order No.", tableX, tableY, columnWidth, rowHeight);
+      addCellHeader(
         "Product Name",
         tableX + columnWidth,
         tableY,
         columnWidth,
         rowHeight
       );
-      addCell(
+      addCellHeader(
         "Quantity",
         tableX + 2 * columnWidth,
         tableY,
         columnWidth,
         rowHeight
       );
-
+      addCellHeader(
+        "Date",
+        tableX + 3 * columnWidth,
+        tableY,
+        columnWidth,
+        rowHeight
+      );
       tableY += rowHeight; // Move down to the first row
       doc.fontSize(14).font("Bree Serif").fillColor("black");
 
       // Add table content (you can loop through your data to populate the table)
-      tableData.forEach((row, index) => {
+      tableData.forEach((row) => {
         // if (checkPageBreak(rowHeight, tableY)) {
         //   doc.addPage(); // Add a new page
         //   tableY = doc.page.margins.top + 20; // Reset the Y position for the first row on the new page
         // }
+        console.log({ row });
 
-        addCell(index + 1, tableX, tableY, columnWidth, rowHeight);
+        addCell(row.orderId, tableX, tableY, columnWidth, rowHeight);
         addCell(
-          row.productName,
+          row.product.productName,
           tableX + columnWidth,
           tableY,
           columnWidth,
           rowHeight
         );
         addCell(
-          row.updatedQuantity,
+          row.product.updatedQuantity,
           tableX + 2 * columnWidth,
+          tableY,
+          columnWidth,
+          rowHeight
+        );
+        addCell(
+          row.createdAt,
+          tableX + 3 * columnWidth,
           tableY,
           columnWidth,
           rowHeight
@@ -196,7 +221,7 @@ export const EmployeePdfGenerator = async (req, res) => {
     doc.pipe(res);
 
     // Add package name with formatting and justification
-    const logoPath = path.join(basePath, "PDF Generation/logo.jpg");
+    const logoPath = path.join(basePath, "PDF Generation/logo.png");
     const logoBuffer = fs.readFileSync(logoPath);
 
     const customFontPath = path.join(__dirname, "BreeSerif-Regular.ttf"); // Update the font path
@@ -232,14 +257,27 @@ export const EmployeePdfGenerator = async (req, res) => {
     const tableEmpData = [employeeData.username, employeeData.dept];
     addEmpTable(tableEmpData);
 
-    for (let page = 0; page < tableDataChunks.length; page++) {
-      const tableDataPage = tableDataChunks[page];
+    let pageNo = 0;
+    if (tableDataChunks && tableDataChunks.length > 0) {
+      for (let page = 0; page < tableDataChunks.length; page++) {
+        const tableDataPage = tableDataChunks[page];
+        if (page > 0) {
+          doc.addPage();
+        }
 
-      if (page > 0) {
-        doc.addPage();
+        addTable(tableDataPage);
+        addLine(pageNo + 1);
+        pageNo += 1;
       }
-      addTable(tableDataPage);
-      addLine(page + 1);
+    } else {
+      doc
+        .fontSize(32)
+        .fillColor("red")
+        .text("No Order Found!!", doc.page.margins.left, doc.y + 70, {
+          align: "center",
+        });
+      doc.fillColor("black");
+      addLine(pageNo + 1);
     }
 
     doc.end();
