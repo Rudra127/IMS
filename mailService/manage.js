@@ -10,7 +10,6 @@ const { email, decision} = req.body;
     { isConfirmed: userStatus }
   );
 
-  // Send the appropriate email
   if (userStatus === 'approved') {
     try {
       await sendApprovalNotificationEmail(managerEmail, email);
