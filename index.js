@@ -24,7 +24,6 @@ import { GetCategoryImg } from "./GetCategoryImg.js";
 import UpdateCategory from "./Category/UpdateCategory.js";
 import { deleteImage } from "./DeleteBanner.js";
 import cookieParser from "cookie-parser";
-import authMiddleware from "./Middleware/auth.js";
 import isLoggedIn from "./Middleware/islogin.js";
 import { DeleteProductImg } from "./DeleteProductImg.js";
 import UpdateProducts, {
@@ -81,9 +80,9 @@ app.get("/logout", logout);
 
 //middleware for all
 app.use(cookieParser());
-app.use(authMiddleware);
 app.use(isLoggedIn);
-//create product
+
+
 app.post("/createProducts", CreateProducts);
 
 //get product

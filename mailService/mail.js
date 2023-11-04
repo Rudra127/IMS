@@ -1,86 +1,126 @@
-import nodemailer from 'nodemailer';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import path from 'path'; // Import the path module
+  import nodemailer from 'nodemailer';
+  import fs from 'fs';
+  import { fileURLToPath } from 'url';
+  import path from 'path'; // Import the path module
+  import RegisterUsers from "../Schema/register.js";
+  import ejs from 'ejs';
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  function generateRandomPassword(length = 10) {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'teamsquare678@gmail.com',
-    pass: 'hgdc zgag ktrg exri',
-  },
-});
+    return password;
+  }
 
-function sendEmail(to, subject, text, html) {
-  const mailOptions = {
-    from: 'teamsquare678@gmail.com',
-    to,
-    subject,
-    text,
-    html,
-  };
-
-  return new Promise((resolve, reject) => {
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(info.response);
-      }
-    });
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'teamsquare678@gmail.com',
+      pass: 'hgdc zgag ktrg exri',
+    },
   });
-}
 
-async function sendRegistrationPendingEmail(employeeEmail) {
-  const subject = 'Registration Confirmation';
-  const text = 'Thank you for registering. Your registration has been received and is pending approval.';
+  function sendEmail(to, subject, text, html) {
+    const mailOptions = {
+      from: 'teamsquare678@gmail.com',
+      to,
+      subject,
+      text,
+      html,
+    };
+
+    return new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(info.response);
+        }
+      });
+    });
+  }
+
+  async function sendRegistrationPendingEmail(employeeEmail) {
+    const subject = 'Registration Confirmation';
+    const text = 'Thank you for registering. Your registration has been received and is pending approval.';
+    const user = await RegisterUsers.findOne({ email: employeeEmail });
+
+    const html = ejs.render(fs.readFileSync(path.join(__dirname, 'views', 'registrationPending.ejs'), 'utf8'), {
+      data: { firstname: user.fullName },
+      
+    });
+    try {
+      const response = await sendEmail(employeeEmail, subject, text, html);
+      console.log('Email sent: ' + response);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Email could not be sent');
+    }
+  }
+
+  async function sendApprovalNotificationEmail(employeeEmail) {
+    const subject = 'Registration Approval';
+    const user = await RegisterUsers.findOne({ email: employeeEmail });
+    
+    if (!user) {
+      console.error('User not found for email: ' + employeeEmail);
+      throw new Error('User not found');
+    }
+    
+    const temppass = generateRandomPassword();
   
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationPending.ejs'), 'utf8');
-
-  try {
-    const response = await sendEmail(employeeEmail, subject, text, html);
-    console.log('Email sent: ' + response);
-  } catch (error) {
-    console.error(error);
-    throw new Error('Email could not be sent');
+    // Update the temppass field in the user document
+    await RegisterUsers.updateOne({ email: employeeEmail }, { password: temppass });
+  
+    const text = `The registration for ${user.fullName} has been approved.`;
+    const loginLink = 'https://instagram.com'; // Replace with the actual login link
+  
+    const html = ejs.render(fs.readFileSync(path.join(__dirname, 'views', 'registrationApproved.ejs'), 'utf8'), {
+      data: {
+        firstname: user.fullName,
+        email: user.email,
+        password: temppass,
+        loginLink: loginLink,
+      },
+    });
+  
+    try {
+      const response = await sendEmail(employeeEmail, subject, text, html);
+      console.log('Email sent: ' + response);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Email could not be sent');
+    }
   }
-}
 
-async function sendApprovalNotificationEmail(managerEmail, employeeEmail) {
-  const subject = 'Registration Approval';
-  const text = `The registration for ${employeeEmail} has been approved.`;
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationApproved.ejs'), 'utf8');
+  async function sendDeclineNotificationEmail(employeeEmail) {
+    const subject = 'Registration Decline';
+    const text = `The registration for ${employeeEmail} has been declined.`;
+    const user = await RegisterUsers.findOne({ email: employeeEmail });
 
-  try {
-    const response = await sendEmail(managerEmail, subject, text, html);
-    console.log('Email sent: ' + response);
-  } catch (error) {
-    console.error(error);
-    throw new Error('Email could not be sent');
+    const html = ejs.render(fs.readFileSync(path.join(__dirname, 'views', 'registrationDecline.ejs'), 'utf8'), {
+      data: { firstname: user.fullName },
+      
+    });
+    try {
+      const response = await sendEmail(employeeEmail,subject, text, html);
+      console.log('Email sent: ' + response);
+    } catch (error) {
+      console.error(error);
+      throw new Error('Email could not be sent');
+    }
   }
-}
 
-async function sendDeclineNotificationEmail(managerEmail, employeeEmail) {
-  const subject = 'Registration Decline';
-  const text = `The registration for ${employeeEmail} has been declined.`;
-  const html = fs.readFileSync(path.join(__dirname, 'views', 'registrationDecline.ejs'), 'utf8');
-
-  try {
-    const response = await sendEmail(managerEmail, subject, text, html);
-    console.log('Email sent: ' + response);
-  } catch (error) {
-    console.error(error);
-    throw new Error('Email could not be sent');
-  }
-}
-
-export {
-  sendRegistrationPendingEmail,
-  sendApprovalNotificationEmail,
-  sendDeclineNotificationEmail,
-};
+  export {
+    sendRegistrationPendingEmail,
+    sendApprovalNotificationEmail,
+    sendDeclineNotificationEmail,
+  };

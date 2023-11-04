@@ -1,95 +1,80 @@
 import RegisterUsers from "../Schema/register.js";
-import { sendRegistrationPendingEmail, sendApprovalNotificationEmail, sendDeclineNotificationEmail} from "../mailService/mail.js"; // Import your email sending functions
+import { sendRegistrationPendingEmail} from "../mailService/mail.js"; 
+import jwt from "jsonwebtoken";
 const registerUser = async (req, res) => {
   try {
+    const expires = 1000 * 60 * 60 * 24 * 15;
+
     const {
       cartId,
       empId,
       username,
+      fullName,
       dept,
       designation,
       mNumber,
       email,
       password,
       confirmPass,
-      branchManagerApproval,
+      panel,
     } = req.body;
-
+console.log(req.body);
     if (password !== confirmPass) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const existingUser = await RegisterUsers.findOne({ username });
-
+    const existingUser = await RegisterUsers.findOne({ email });
+    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    let userStatus = "pending";
+    const userStatus = "pending";
 
-    // If branchManagerApproval is true, set userStatus to "approved"
-    if (branchManagerApproval) {
-      userStatus = "approved";
-    } else if (branchManagerApproval === false) {
-      userStatus = "declined";
-    }
-
-    // Create a new user with the specified status
+    // Create a new user with the specified status and panel
     const newUser = new RegisterUsers({
       cartId,
       empId,
       username,
+      fullName,
       dept,
       designation,
       mNumber,
       email,
       password: password,
       confirmPass: password,
-      isConfirmed: userStatus, // Set the status based on branchManagerApproval
+      isConfirmed: userStatus,
+      panel: panel, // Set the panel based on the request
     });
 
     // Save the user to the database
     await newUser.save();
 
-  
-
-    // Send a registration confirmation email
+    // Send a registration Pending email
     try {
       await sendRegistrationPendingEmail(email);
     } catch (error) {
-      console.error("Error sending registration confirmation email", error);
+      console.error("Error sending registration Pending email", error);
+      console.log("Mail sent done");
     }
-    const managerEmail = "teamsquare678@gmail.com"; 
-    if (userStatus === "approved") {
-      // Replace 'managerEmail' with the actual manager's email address
-      try {
-        await sendApprovalNotificationEmail(managerEmail, email);
-      } catch (error) {
-        console.error("Error sending approval email", error);
-      }
-    } else if (userStatus === "declined") {
-      // If the user is declined, send a decline email
-      try {
-        await sendDeclineNotificationEmail(managerEmail, email);
-      } catch (error) {
-        console.error("Error sending decline email", error);
-      }
+    if(panel === "Branch Manager"){
+      let branchtoken = jwt.sign(
+        { email: email, cartId: cartId, panel: panel},
+        process.env.JWT_SECRET
+      );
+      console.log(branchtoken);
+      res.cookie("branchAuthtoken", branchtoken, {
+        expires: new Date(Date.now() + expires),
+        sameSite: "none",
+        secure: true,
+      });
     }
-    const data ={
-      firstname: req.body.username, // Use the user's first name from the request
-      username: req.body.email,   // Use the user's username from the request
-      password: req.body.password,
-      loginLink: 'https://instagram.com',
- 
-    }
+    console.log("branch managercookie done ");
 
-  console.log(data);
-  res.set('Content-Type', 'text/html');
-  res.render('registrationpending.ejs', { data: data });
-
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

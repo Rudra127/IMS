@@ -18,14 +18,18 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
+  fullName:{
+    type: String,
+    required: true,
+  },
   dept: {
     type: String,
     required: true,
   },
-  role: {
+  panel: {
     type: String,
-    default: "branch manager",
-    enum: ["employee", "branch manager"],
+    default: "Employee",
+    enum: ["Employee", "Branch Manager", "Shopkeeper"],
   },
   designation: {
     type: String,
