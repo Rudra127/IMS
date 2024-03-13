@@ -79,6 +79,7 @@ app.use(
   })
 );
 
+app.get("/health", (req, res) => res.status(200).json({ message: "OK" }));
 //user Endpoints
 //Branch manager auth endpoints
 app.get("/branch/verify/:branchToken", authenticateBrachManagerAccount);
