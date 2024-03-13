@@ -62,6 +62,12 @@ const userSchema = new mongoose.Schema({
     enum: ["approved", "declined", "pending"],
     default: "pending",
   },
+  verified:{
+    type: Boolean,
+    default: false,
+    required: true,
+
+  }
 });
 userSchema.pre("save", async function (next) {
   if (!this.cartId) {

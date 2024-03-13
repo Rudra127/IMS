@@ -44,6 +44,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { BranchManagerPdfGenerator } from "./PDF Generation/BranchManagerPdfGenerate.js";
 import { EmployeePdfGenerator } from "./PDF Generation/EmployeePdfGenerate.js";
+import authenticateBrachManagerAccount from "./Auth/branchManagerAuth/authenticate.js";
+import branchUser from "./Auth/branchManagerAuth/register.js";
+import branchLogin from "./Auth/branchManagerAuth/login.js";
+import authenticateEmployeeAccount from "./Auth/employeeAuth/authenticate.js";
+import employeeUser from "./Auth/employeeAuth/register.js";
+import employeeLogin from "./Auth/employeeAuth/login.js";
+import authMiddleware from "./Middleware/auth.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -53,6 +60,7 @@ const db = connectToMongo();
 const viewsPath = path.join(__dirname, "mailService/views");
 app.set("views", viewsPath);
 app.set("view engine", "ejs");
+app.use(cookieParser());
 
 const port = 4469;
 app.use(express.json());
@@ -62,6 +70,8 @@ app.use(
       process.env.CLIENT_URL_1,
       process.env.CLIENT_URL_2,
       process.env.CLIENT_URL_3,
+      process.env.CLIENT_URL_4,
+
     ],
     methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"], // Corrected "UPDATE" to "UPDATE"
     credentials: true,
@@ -69,24 +79,29 @@ app.use(
   })
 );
 
+//user Endpoints
+//Branch manager auth endpoints
+app.get("/branch/verify/:branchToken", authenticateBrachManagerAccount);
+app.post("/branchManagerRegister", branchUser);
+app.post("/branchLogin", branchLogin);
+
+//Employee auth endpoints
+
+app.get("/employee/verify/:employeeToken", authenticateEmployeeAccount);
+app.post("/employeeRegister", employeeUser);
+app.post("/employeeLogin", employeeLogin);
+
+
+////////////////////////////////////////////////////////////////Unprotected area completed////////////////////////////////////////////////////////////////
+app.use(authMiddleware);
+app.post("/createProducts", CreateProducts);
+
+
 app.use("/categoryImg", express.static("categoryImg"));
 app.use("/ProductImg", express.static("ProductImg"));
-//user Endpoints
-app.post("/register", registerUser);
-
-app.post("/login", loginUsers);
-
-app.get("/logout", logout);
-
-//middleware for all
-app.use(cookieParser());
-// app.use(isLoggedIn);
-
-app.post("/createProducts", CreateProducts);
 
 //get product
 app.get("/GetProducts", GetProducts);
-
 //update product
 app.post("/UpdateProducts", UpdateProducts);
 app.post("/UpdateProductsQty", UpdateProductsQty);
@@ -199,7 +214,7 @@ app.post("/generate-pdf-employee", EmployeePdfGenerator);
 app.post("/generate-pdf-branch-manager", BranchManagerPdfGenerator);
 
 
-app.post("/CreateSubCategory", CreateSubCategory)
+// app.post("/CreateSubCategory", CreateSubCategory)
 
 // orbit's area END //
 

@@ -13,6 +13,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const BranchManagerPdfGenerator = async (req, res) => {
   try {
     const { empId } = req.query;
+    // const {branchManagerId} = req.query;
+    // const branchUserData = await registerUsers.findOne({
+    //   empId,
+    //   role: "branch manager",
+    // });
     const employeeData = await registerUsers.findOne({
       empId,
       role: "branch manager",
