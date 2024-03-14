@@ -13,7 +13,7 @@
     secure: true,
     auth: {
       user: 'teamsquare678@gmail.com',
-      pass: 'hgdc zgag ktrg exri',
+      pass: 'jcoe zyip juca knnn',
     },
   });
 

@@ -51,6 +51,7 @@ import authenticateEmployeeAccount from "./Auth/employeeAuth/authenticate.js";
 import employeeUser from "./Auth/employeeAuth/register.js";
 import employeeLogin from "./Auth/employeeAuth/login.js";
 import authMiddleware from "./Middleware/auth.js";
+import tokenAuthMiddleware from "./Middleware/employeeloginmiddleware.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -87,7 +88,7 @@ app.post("/branchManagerRegister", branchUser);
 app.post("/branchLogin", branchLogin);
 
 //Employee auth endpoints
-
+app.post("/employeeLoginMiddleware", tokenAuthMiddleware);
 app.get("/employee/verify/:employeeToken", authenticateEmployeeAccount);
 app.post("/employeeRegister", employeeUser);
 app.post("/employeeLogin", employeeLogin);
