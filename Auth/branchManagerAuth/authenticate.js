@@ -1,4 +1,5 @@
 import registerBranchUser from "../../Schema/branchmanagerschema.js";
+import jwt from 'jsonwebtoken';
 
 const authenticateBrachManagerAccount = async (req, res) => {
 

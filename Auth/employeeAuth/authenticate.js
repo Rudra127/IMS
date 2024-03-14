@@ -1,4 +1,5 @@
 import registerUsers from "../../Schema/register.js";
+import jwt from 'jsonwebtoken';
 
 const authenticateEmployeeAccount = async (req, res) => {
 
@@ -7,7 +8,7 @@ const authenticateEmployeeAccount = async (req, res) => {
       const { email } = jwt.verify(employeeToken, process.env.JWT_SECRET2);
   
       console.log("email: " + email);
-      console.log("jwt secret ", process.env.JWT_SECRET2);
+      console.log("jwt:", employeeToken)
       const data = await registerUsers.findOne({ email });
   
       if (!data) {
@@ -25,7 +26,6 @@ const authenticateEmployeeAccount = async (req, res) => {
       res.status(200).json({ message: "Verification successful" });
     } catch (err) {
       console.error(err.message);
-  
       res.status(500).json({ message: "unverified" });
     }
   };
