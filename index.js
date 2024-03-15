@@ -3,8 +3,8 @@ import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
 const app = express();
 import cors from "cors";
-import registerUser from "./Auth/register.js";
-import loginUsers from "./Auth/login.js";
+import registerUser from "./Auth/shopKeeperAuth/register.js";
+import loginUsers from "./Auth/shopKeeperAuth/login.js";
 import jwt from "jsonwebtoken";
 import AddCart from "./Cart/AddCart.js";
 import { GetCarts } from "./Cart/GetCarts.js";
@@ -12,7 +12,7 @@ import { CreateOrder } from "./Orders/CreateOrder.js";
 import { GetOrders } from "./Orders/GetOrders.js";
 import { DeleteOrders } from "./Orders/DeleteOrder.js";
 import { UpdateOrder } from "./Orders/UpdateOrder.js";
-import logout from "./Auth/logout.js";
+import logout from "./Auth/shopKeeperAuth/logout.js";
 import UploadBanner from "./Middleware/UploadBanner.js";
 import { GetProductImg } from "./GetProductImg.js";
 import CreateProducts from "./Products/CreateProducts.js";
@@ -52,6 +52,12 @@ import employeeUser from "./Auth/employeeAuth/register.js";
 import employeeLogin from "./Auth/employeeAuth/login.js";
 import authMiddleware from "./Middleware/auth.js";
 import tokenAuthMiddleware from "./Middleware/employeeloginmiddleware.js";
+import registerShopKeeper from "./Auth/shopKeeperAuth/register.js";
+import shopKeeperLogin from "./Auth/shopKeeperAuth/login.js";
+import authenticateShopKeeperAccount from "./Auth/shopKeeperAuth/authenticate.js";
+import registerBranchUser from "./Schema/branchmanagerschema.js";
+import GetBranchManagers from "./BranchManagers/GetBranchManagers.js";
+import GetUser from "./Employee/GetUser.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -72,7 +78,6 @@ app.use(
       process.env.CLIENT_URL_2,
       process.env.CLIENT_URL_3,
       process.env.CLIENT_URL_4,
-
     ],
     methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"], // Corrected "UPDATE" to "UPDATE"
     credentials: true,
@@ -93,11 +98,13 @@ app.get("/employee/verify/:employeeToken", authenticateEmployeeAccount);
 app.post("/employeeRegister", employeeUser);
 app.post("/employeeLogin", employeeLogin);
 
+app.get("/shopKeeper/verify/:shopKeeperToken", authenticateShopKeeperAccount);
+app.post("/shopKeeperRegister", registerShopKeeper);
+app.post("/shopKeeperLogin", shopKeeperLogin);
 
 ////////////////////////////////////////////////////////////////Unprotected area completed////////////////////////////////////////////////////////////////
 app.use(authMiddleware);
 app.post("/createProducts", CreateProducts);
-
 
 app.use("/categoryImg", express.static("categoryImg"));
 app.use("/ProductImg", express.static("ProductImg"));
@@ -110,15 +117,34 @@ app.post("/UpdateProductsQty", UpdateProductsQty);
 app.get("/CheckMinLimit", CheckMinLimit);
 //delete product
 app.post("/DeleteProducts", DeleteProducts);
-app.get("/GetCartId", (req, res) => {
+
+app.get("/GetBranchCartId", async (req, res) => {
+  console.log(req.cookies);
+  const { branchAuthtoken } = req.cookies;
+  if (branchAuthtoken) {
+    const data = jwt.verify(branchAuthtoken, process.env.JWT_SECRET);
+    console.log(data);
+    const user = await registerBranchUser.findOne({ email: data.email });
+    console.log(user);
+    if (user?.cartId) {
+      res.status(200).json({ cartId: user.cartId });
+    } else {
+      res.status(404).json({ message: "cartId not found", isCartId: false });
+    }
+  }
+});
+
+app.get("/GetEMPCartId", (req, res) => {
   console.log(req.cookies);
   const { Authtoken } = req.cookies;
-  const data = jwt.verify(Authtoken, process.env.JWT_SECRET);
-  console.log(data);
-  if (data.cartId) {
-    res.status(200).json({ cartId: data.cartId });
-  } else {
-    res.status(404).json({ message: "cartId not found", isCartId: false });
+  if (Authtoken) {
+    const data = jwt.verify(Authtoken, process.env.JWT_SECRET);
+    console.log(data);
+    if (data.cartId) {
+      res.status(200).json({ cartId: data.cartId });
+    } else {
+      res.status(404).json({ message: "cartId not found", isCartId: false });
+    }
   }
 });
 // orbit's area //
@@ -203,6 +229,8 @@ app.post("/DeleteCategory", DeleteCategory);
 app.get("/categoryImg/:imageName", GetCategoryImg);
 
 app.get("/GetEmployees", GetEmployees);
+app.get("/GetUser", GetUser);
+app.get("/GetBranchManagers", GetBranchManagers);
 app.post("/UpdateEmployee", UpdateEmployees);
 
 app.post("/CreateSurveyForm", CreateSurveyForm);

@@ -26,14 +26,14 @@ const employeeUser = async (req, res) => {
 
     if (createEmployeeUser) {
       const employeeToken = jwt.sign(
-        { email: email },
+        { email: email ,cartId:createEmployeeUser.cartId},
         process.env.JWT_SECRET2
       );
       const verifyUrl = `${process.env.CLIENT_URL_4}/employee/verify/${employeeToken}`;
 
       console.log(verifyUrl);
       const panel = "employee";
-      res.status(205).json({ message: "please authenticate your self" });
+      res.status(200).json({ message: "please authenticate your self" });
       await sendRegistrationPendingEmail(email);
 
     }

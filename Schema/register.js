@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-  fullName:{
+  fullName: {
     type: String,
     required: true,
   },
@@ -62,11 +62,11 @@ const userSchema = new mongoose.Schema({
     enum: ["approved", "declined", "pending"],
     default: "pending",
   },
-  verified:{
+  verified: {
     type: Boolean,
     default: false,
     required: true,
-  }
+  },
 });
 userSchema.pre("save", async function (next) {
   if (!this.cartId) {

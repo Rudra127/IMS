@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import registerUsers from "../Schema/register.js";
 import moment from "moment/moment.js";
 import Order from "../Schema/Order.js";
+import registerBranchUser from "../Schema/branchmanagerschema.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,9 +19,8 @@ export const BranchManagerPdfGenerator = async (req, res) => {
     //   empId,
     //   role: "branch manager",
     // });
-    const employeeData = await registerUsers.findOne({
-      empId,
-      role: "branch manager",
+    const employeeData = await registerBranchUser.findOne({
+      branchManagerId: empId,
     });
     const orderData = await Order.find({
       cartId: employeeData?.cartId,
@@ -259,7 +259,8 @@ export const BranchManagerPdfGenerator = async (req, res) => {
     });
 
     // Add employee table
-    const tableEmpData = [employeeData.username, employeeData.dept];
+    console.log(employeeData);
+    const tableEmpData = [employeeData?.username, employeeData?.dept];
     addEmpTable(tableEmpData);
 
     let pageNo = 0;

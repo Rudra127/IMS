@@ -15,13 +15,13 @@ const employeeLogin = async (req, res) => {
 
     if (user.verified === false) {
       const employeeToken = jwt.sign(
-        { email: email },
+        { email: email, cartId: user.cartId },
         process.env.JWT_SECRET2
       );
       const verifyUrl = `${process.env.CLIENT_URL_4}/employee/verify/${employeeToken}`;
       console.log(verifyUrl);
       const panel = "Employee";
-      res.status(205).json({ message: "please authenticate your self" });
+      return res.status(400).json({ message: "please authenticate your self" });
     }
 
     if (password !== user.password) {
@@ -29,21 +29,24 @@ const employeeLogin = async (req, res) => {
     }
 
     if (user.isConfirmed === "declined") {
-      return res.status(403).json({ messgae: "you are unauthorized by admin" });
+      return res.status(403).json({ message: "you are unauthorized by admin" });
     }
 
     if (user.isConfirmed === "pending") {
-      return res.status(406).json({ messgae: "you are not authenticated by admin" });
+      return res
+        .status(406)
+        .json({ message: "you are not authenticated by admin" });
     }
-
 
     if (user.verified === true && user.isConfirmed === "approved") {
       // Generate a JWT token
       const token = jwt.sign(
-        { email: user.email },
+        { email: user.email, cartId: user.cartId },
         process.env.JWT_SECRET
       );
-      res.status(200).json({ message: "Login successful", token, verified: user.verified });
+      return res
+        .status(200)
+        .json({ message: "Login successful", token, verified: user.verified });
     }
     // Send the token in the response
   } catch (error) {

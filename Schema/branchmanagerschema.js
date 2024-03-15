@@ -1,9 +1,16 @@
 import mongoose from "mongoose";
 
-
+function generateRandomCartId() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
 const userSchema = new mongoose.Schema({
+  cartId: {
+    type: Number,
+    unique: true,
+  },
   branchManagerId: {
-    type: Number, 
+    type: String,
+    default: generateRandomCartId,
   },
   username: {
     type: String,
@@ -11,7 +18,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-  fullName:{
+  fullName: {
     type: String,
     required: true,
   },
@@ -19,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- 
+
   mNumber: {
     type: String,
     unique: true,
@@ -54,7 +61,14 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     required: true,
+  },
+});
+userSchema.pre("save", async function (next) {
+  if (!this.cartId) {
+    this.cartId = generateRandomCartId();
   }
+
+  next();
 });
 
 const registerBranchUser = mongoose.model("registerBranchUser", userSchema);
