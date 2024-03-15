@@ -6,25 +6,14 @@
   import ejs from 'ejs';
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  function generateRandomPassword(length = 10) {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let password = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset[randomIndex];
-    }
-
-    return password;
-  }
-
+ 
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     secure: true,
     auth: {
       user: 'teamsquare678@gmail.com',
-      pass: 'hgdc zgag ktrg exri',
+      pass: 'jcoe zyip juca knnn',
     },
   });
 
@@ -75,11 +64,6 @@
       throw new Error('User not found');
     }
     
-    const temppass = generateRandomPassword();
-  
-    // Update the temppass field in the user document
-    await RegisterUsers.updateOne({ email: employeeEmail }, { password: temppass });
-  
     const text = `The registration for ${user.fullName} has been approved.`;
     const loginLink = 'https://instagram.com'; // Replace with the actual login link
   
@@ -87,7 +71,6 @@
       data: {
         firstname: user.fullName,
         email: user.email,
-        password: temppass,
         loginLink: loginLink,
       },
     });
