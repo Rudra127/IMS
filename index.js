@@ -198,8 +198,7 @@ app.post("/DeleteSurvey", DeleteSurvey);
 app.post("/generate-pdf-employee", EmployeePdfGenerator);
 app.post("/generate-pdf-branch-manager", BranchManagerPdfGenerator);
 
-
-app.post("/CreateSubCategory", CreateSubCategory)
+// app.post("/CreateSubCategory", CreateSubCategory)
 
 // orbit's area END //
 
